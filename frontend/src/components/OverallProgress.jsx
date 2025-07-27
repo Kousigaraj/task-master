@@ -10,7 +10,7 @@ const OverallProgress = () => {
   return (
     <Card >
         <Card.Body>
-            <Card.Title className='mb-3'>Overall Progress({percentage}%)</Card.Title>
+            <Card.Title className='mb-3'>Overall Progress({percentage ? percentage : 0}%)</Card.Title>
             <ProgressBar striped variant="primary" now={percentage} /> 
         </Card.Body>  
     </Card> 

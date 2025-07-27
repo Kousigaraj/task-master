@@ -50,7 +50,7 @@ const CreateTaskModal = ({ showModal,setShowModal, handleClose, isEdit, existing
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group className="mb-3" controlId="formTask">
+          <Form.Group className="mb-3" controlId="formTaskTitle">
             <Form.Label>Task Title</Form.Label>
             <Form.Control
               type="text"
@@ -62,7 +62,7 @@ const CreateTaskModal = ({ showModal,setShowModal, handleClose, isEdit, existing
               required
             />
           </Form.Group>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3" controlId="formTaskDescription">
             <Form.Label>Description (optional)</Form.Label>
             <Form.Control
               as="textarea"
@@ -73,7 +73,7 @@ const CreateTaskModal = ({ showModal,setShowModal, handleClose, isEdit, existing
               onChange={(e) => setNewTask({...newTask, description: e.target.value})}
             />
           </Form.Group>
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3" controlId="formTaskDueDate">
             <Form.Label>Due Date</Form.Label>
             <Form.Control
               type="date"

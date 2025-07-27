@@ -56,7 +56,27 @@ const Trash = () => {
       ):(
         <p className='text-secondary'>No trashed tasks found. Everything looks clean!</p>
       )}
-      <AlertModel showAlert={showAlert} isClearTrash={isClearTrash} alertData={alertData} setShowAlert={setShowAlert}/>
+      <AlertModel 
+        showAlert={showAlert}
+        setShowAlert={setShowAlert}
+        alertData={alertData}
+        onConfirm={async () => {
+          let result;
+          if (!isClearTrash && alertData.tid) {
+            result = await deleteTask(alertData.tid);
+          } else {
+            result = await clearTrash();
+          }
+          setToastData({
+            success: result.success,
+            message: result.message,
+          });
+          setShow(true);
+        }}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
+
     </Container>
   )
 }

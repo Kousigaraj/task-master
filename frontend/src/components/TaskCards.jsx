@@ -44,7 +44,7 @@ const TaskCards = ({ task, setShowModal, setIsEdit, setSelectedTask }) => {
             </Card.Title>
             <Card.Text className={task.completed ? "text-decoration-line-through text-secondary" : ""}>{task.description}</Card.Text>
           </Col>
-          <Col md={4} lg={2} className='d-flex justify-content-end align-items-end flex-column gap-2'>
+          <Col md={4} lg={2} className='d-flex justify-content-center align-items-end flex-column gap-2'>
           <div className='d-flex justify-content-center align-items-center text-secondary'>
             <FaRegCalendarAlt className='me-2' />
             {task.dueDate && (
