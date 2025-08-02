@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 import './profile.css';
 import { MdEdit } from "react-icons/md";
 import PasswordModal from '../components/PasswordModal';
+import profilePic from '../assets/default-profile.jpg';
 
 const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -22,20 +23,20 @@ const Profile = () => {
   }
 
   return (
-    <Container className="p-3" style={{height: "100vh"}}>
+    <Container className="p-3 mt-5" style={{height: "93vh"}}>
       <h2>Profile</h2>
       <p className='text-secondary'>Manage your account information</p>
       <Card style={{ width: '100%' }}>
         <Card.Body>
-          <div className="d-flex align-items-center mb-4">
+          <div className="profile-image-input d-flex align-items-center mb-4">
             <img
-              src="default-profile.jpg"
+              src={profilePic}
               className="border border-2 rounded-circle"
-              alt="Profile"
+              alt="Profile Picture"
               style={{ height: "150px", width: "150px", objectFit: "cover" }}
             />
-            <div className="ms-4">
-              <label htmlFor="profile-picture" className="form-label fw-semibold">
+            <div className="ms-4 text-center">
+              <label htmlFor="profile-picture" className="form-label fw-bold">
                 Change Profile Picture
               </label>
               <input id="profile-picture" className="form-control form-control-sm" type="file" disabled={!isEdit}/>
@@ -43,7 +44,7 @@ const Profile = () => {
           </div>
           <Form>
             <Row >
-              <Col>
+              <Col md={12} lg={6}>
                 <Form.Group className="mb-3" controlId="formName">
                   <Form.Label className='fw-bold'>Name</Form.Label>
                   <Form.Control 
@@ -58,7 +59,7 @@ const Profile = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col>
+              <Col md={12} lg={6}>
                 <Form.Group className="mb-3" controlId="formEmail">
                   <Form.Label className='fw-bold'>Email address</Form.Label>
                   <Form.Control 

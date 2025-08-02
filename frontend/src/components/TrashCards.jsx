@@ -6,14 +6,18 @@ import { useTaskStore } from '../store/task';
 import { TbTrashXFilled } from "react-icons/tb";
 import { FaRedoAlt } from "react-icons/fa";
 import { FaClockRotateLeft } from "react-icons/fa6";
+import { toast } from 'react-toastify';
 
 const TrashCards = ({ trashedTask, handleDeletePermenently }) => {
-  const { restoreTask, setToastData, setShow } = useTaskStore();
+  const { restoreTask } = useTaskStore();
 
   const handleRestore = async (tid) => {
-    const { success, message } = await restoreTask(tid);
-    setToastData({ success, message });
-    setShow(true);
+    const result = await restoreTask(tid);
+    if(result.success){
+      toast.success(result.message);
+    } else{
+      toast.error(result.message);
+    }
   };
 
   let remainingDays = '-';

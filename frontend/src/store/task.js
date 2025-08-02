@@ -17,7 +17,7 @@ export const useTaskStore = create((set) => ({
         });
         const data = await res.json();
         set((state) => ({ tasks: [...state.tasks, data.data] }));
-        return { success: true, message: "Task added." };
+        return { success: true, message: "Task added successfully." };
     },
     
     fetchTasks: async () => {
@@ -49,7 +49,7 @@ export const useTaskStore = create((set) => ({
         set(state => ({
             tasks: state.tasks.map(task => task._id === tid ? data.data : task)
         }));
-        return { success: true, message: "Task Updated."};
+        return { success: true, message: "Task updated successfully."};
     },
 
     trashedTasks: [],
@@ -120,10 +120,4 @@ export const useTaskStore = create((set) => ({
 
         return { success: true, message: completed ? "Task marked as completed." : "Task marked as pending." };
     },
-
-    toastData: {},
-    setToastData: (toastData) => set({ toastData }),
-
-    show: false,
-    setShow: (show) => set({ show }),
 }));

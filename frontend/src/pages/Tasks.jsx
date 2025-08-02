@@ -32,7 +32,7 @@ const Tasks = () => {
 
 
   return (
-    <Container className="position-relative p-3 overflow-auto overflow-x-hidden" style={{height: "100vh"}}>
+    <Container className="position-relative mt-5 p-3 overflow-auto overflow-x-hidden" style={{height: "93vh"}}>
       <h2>Tasks</h2>
       <p className="text-secondary">Manage and track your daily tasks.</p>
       {tasks.length > 0 ? (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useTaskStore } from "../store/task";
+import { toast } from 'react-toastify';
 
 const CreateTaskModal = ({ showModal,setShowModal, handleClose, isEdit, existingTask}) => {
   const [newTask, setNewTask] = useState({
@@ -9,7 +10,7 @@ const CreateTaskModal = ({ showModal,setShowModal, handleClose, isEdit, existing
       dueDate: "",
     });
 
-  const {createTask, updateTask, setToastData, setShow} = useTaskStore();
+  const {createTask, updateTask,} = useTaskStore();
 
   useEffect(() => {
     if (isEdit && existingTask) {
@@ -32,15 +33,12 @@ const CreateTaskModal = ({ showModal,setShowModal, handleClose, isEdit, existing
       setNewTask({ title: "", description: "", dueDate: "" });
     }
 
-    setToastData({
-      success: result.success,
-      message: result.message,
-    });
-
-    if (result.success) {
-      setShowModal(false);
-      setShow(true);
+    if(result.success){
+      toast.success(result.message);
+    } else{
+      toast.error(result.message);
     }
+    setShowModal(false);
   };
 
   return (

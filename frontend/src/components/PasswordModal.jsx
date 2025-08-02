@@ -42,6 +42,7 @@ const PasswordModal = ({ show, setShow }) => {
             <Form.Label>Old Password</Form.Label>
             <Form.Control
               type="password"
+              name='oldPassword'
               placeholder="Enter old password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
@@ -53,6 +54,7 @@ const PasswordModal = ({ show, setShow }) => {
             <Form.Label>New Password</Form.Label>
             <Form.Control
               type="password"
+              name='newPassword'
               placeholder="Enter new password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
@@ -64,6 +66,7 @@ const PasswordModal = ({ show, setShow }) => {
             <Form.Label>Confirm Password</Form.Label>
             <Form.Control
               type="password"
+              name='confirmPassword'
               placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}

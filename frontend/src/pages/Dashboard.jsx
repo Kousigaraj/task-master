@@ -22,9 +22,9 @@ const Dashboard = () => {
   const overdueTasks = tasks.filter(task => new Date(task.dueDate) < new Date() && !task.completed);
 
   return (
-      <Container className="p-3" style={{height: "100vh"}}>
+      <Container className="p-3 mt-5" style={{height: "93vh"}}>
         <h2>Dashboard</h2>
-        <Row className='mt-3' sm={1} md={2} lg={4}>
+        <Row className='mt-3'>
           <Col className="mb-3" md={12} lg={12}>
             <Card>
               <Card.Body>
@@ -36,10 +36,10 @@ const Dashboard = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col className="mb-2"><StatusCard text="Total Tasks" color="dark" count={tasks.length} /></Col>
-          <Col className="mb-2"><StatusCard text="Completed" color="success" count={completedTasks.length} /></Col>
-          <Col className="mb-2"><StatusCard text="Pending" color="warning" count={pendingTasks.length} /></Col>
-          <Col className="mb-2"><StatusCard text="Overdue" color="danger" count={overdueTasks.length} /></Col>
+          <Col className="mb-2" md={6} lg={3}><StatusCard text="Total Tasks" color="dark" count={tasks.length} /></Col>
+          <Col className="mb-2" md={6} lg={3}><StatusCard text="Completed" color="success" count={completedTasks.length} /></Col>
+          <Col className="mb-2" md={6} lg={3}><StatusCard text="Pending" color="warning" count={pendingTasks.length} /></Col>
+          <Col className="mb-2"md={6} lg={3}><StatusCard text="Overdue" color="danger" count={overdueTasks.length} /></Col>
           <Col className="mb-3 mt-2" md={12} lg={12}>
                <OverallProgress />
           </Col>

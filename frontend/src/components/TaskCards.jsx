@@ -6,14 +6,18 @@ import Form from 'react-bootstrap/Form';
 import { useTaskStore } from '../store/task';
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FaEdit, FaRegCalendarAlt } from "react-icons/fa";
+import { toast } from 'react-toastify';
 
 const TaskCards = ({ task, setShowModal, setIsEdit, setSelectedTask }) => {
-  const { trashTask, setToastData, setShow, updateTaskStatus } = useTaskStore();
+  const { trashTask, updateTaskStatus } = useTaskStore();
 
   const handleTrash = async () => {
-    const { success, message } = await trashTask(task._id);
-    setToastData({ success, message });
-    setShow(true);
+    const result = await trashTask(task._id);
+    if(result.success){
+      toast.success(result.message);
+    } else{
+      toast.error(result.message);
+    }
   };
 
   const handleEdit = () => {
@@ -23,9 +27,12 @@ const TaskCards = ({ task, setShowModal, setIsEdit, setSelectedTask }) => {
   };
 
   const handleToggleStatus = async (e) => {
-    const { success, message } = await updateTaskStatus(task._id, e.target.checked);
-    setToastData({ success, message });
-    setShow(true);
+    const result = await updateTaskStatus(task._id, e.target.checked);
+    if(result.success){
+      toast.success(result.message);
+    } else{
+      toast.error(result.message);
+    }
   };
 
   return (

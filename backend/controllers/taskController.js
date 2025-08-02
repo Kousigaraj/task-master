@@ -55,7 +55,7 @@ export const deleteTasks = async (req, res) => {
     
     try {
         await Task.findByIdAndDelete(id);
-        res.status(200).json({ success: true, message: "Task deleted"});
+        res.status(200).json({ success: true, message: "Task deleted permanently."});
     } catch (error) {
         console.error("Error in deleting task: ", error.message);
         res.status(500).json({ success: false, message: "Server Error"});
@@ -99,7 +99,7 @@ export const restoreFromTrash = async (req, res) => {
       deletedAt: null,
     });
     if (!task) {
-      return res.status(404).json({ success: false, message: "Task not found" });
+      return res.status(404).json({ success: false, message: "Task not found." });
     }
     res.status(200).json({ success: true, data: task });
   } catch (err) {
@@ -122,7 +122,7 @@ export const clearTrash = async (req, res) => {
       deletedAt: { $ne: null }
     });
 
-    res.json({ success: true, message: `Cleared ${result.deletedCount} trashed tasks.` });
+    res.json({ success: true, message: `Cleared ${result.deletedCount} trashed task${result.deletedCount > 1 ? 's' : ''}.` });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to clear trashed tasks.' });
   }

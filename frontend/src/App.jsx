@@ -1,26 +1,16 @@
-import { SideBar } from "./components/SideBar";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import AppRoutes from "./routes/AppRoutes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Tasks from "./pages/Tasks";
-import Trash from "./pages/Trash";
-import Profile from "./pages/Profile";
-import Tost from "./components/Tost";
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="d-flex">
-        <SideBar />
-        <div className="flex-grow-1" style={{marginLeft: "240px"}}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/trash" element={<Trash />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </div>
-      </div>
-      <Tost />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/app/*" element={<AppRoutes />} />
+      </Routes>
     </BrowserRouter>
   );
 }

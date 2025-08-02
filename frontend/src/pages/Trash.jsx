@@ -5,13 +5,14 @@ import TrashCards from '../components/TrashCards';
 import Button from 'react-bootstrap/Button';
 import AlertModel from '../components/AlertModel';
 import { LuPaintbrush } from "react-icons/lu";
+import { toast } from 'react-toastify';
 
 
 const Trash = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertData, setAlertData] = useState({});
   const [isClearTrash, setClearTrash] = useState(false);
-  const {trashedTasks, fetchTrashedTasks, setToastData, setShow} = useTaskStore();
+  const {trashedTasks, fetchTrashedTasks, deleteTask, clearTrash} = useTaskStore();
 
   useEffect(() => {
     fetchTrashedTasks();
@@ -28,11 +29,7 @@ const Trash = () => {
 
   const handleClearTrash = () => {
     if(trashedTasks.length == 0){
-      setToastData({
-        success: false,
-        message: "No Tasks in trash."
-      });
-      setShow(true);
+      toast.error("No Tasks in trash.")
       return;
     }
     setClearTrash(true);
@@ -43,7 +40,7 @@ const Trash = () => {
   }
 
   return (
-    <Container className="position-relative p-3 overflow-auto overflow-x-hidden" style={{height: "100vh"}}>
+    <Container className="position-relative mt-5 p-3 overflow-auto overflow-x-hidden" style={{height: "93vh"}}>
       <div className='d-flex w-100 justify-content-between'>
         <h2>Trash</h2>
         <Button variant="danger" size='sm' onClick={handleClearTrash}><LuPaintbrush className='me-2'/>Clear Trash</Button>
@@ -67,11 +64,11 @@ const Trash = () => {
           } else {
             result = await clearTrash();
           }
-          setToastData({
-            success: result.success,
-            message: result.message,
-          });
-          setShow(true);
+          if(result.success){
+            toast.success(result.message);
+          } else{
+            toast.error(result.message);
+          }
         }}
         confirmText="Delete"
         cancelText="Cancel"
