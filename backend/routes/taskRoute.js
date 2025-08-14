@@ -1,7 +1,10 @@
 import express from 'express';
 import { clearTrash, createTask, deleteTasks, getTasks, getTrashed, moveToTrash, restoreFromTrash, updateTask, updateTaskStatus } from '../controllers/taskController.js';
+import userAuth from '../middleware/userAuth.js';
 
 const router = express.Router();
+
+router.use(userAuth);
 
 router.get("/", getTasks);
 router.get('/trash', getTrashed);

@@ -2,29 +2,26 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { toast } from 'react-toastify';
+import useAuthStore from '../store/auth';
 
 const PasswordModal = ({ show, setShow }) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const {changePassword} = useAuthStore();
+
   const handleClose = () => setShow(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (newPassword !== confirmPassword) {
-      alert("New password and confirm password do not match.");
-      return;
+    const result = await changePassword(oldPassword, newPassword, confirmPassword);
+    if (result.success) {
+      toast.success(result.message || "Password changed successfully");
+    } else {
+      toast.error(result.message || "Password change failed");
     }
-
-    // Perform password update logic here
-    console.log({
-      oldPassword,
-      newPassword,
-    });
-
-    // Reset fields and close modal
     setOldPassword('');
     setNewPassword('');
     setConfirmPassword('');
@@ -75,10 +72,10 @@ const PasswordModal = ({ show, setShow }) => {
           </Form.Group>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="outline-secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="dark" type="submit">
               Update Password
             </Button>
           </Modal.Footer>

@@ -4,31 +4,42 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import StatusCard from '../components/StatusCard';
 import { useTaskStore } from '../store/task';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import OverallProgress from '../components/OverallProgress';
 import TodayTasks from '../components/TodayTasks';
+import useAuthStore from '../store/auth';
+import FullPageLoader from '../components/FullPageLoader';
 
 
 const Dashboard = () => {
 
   const {tasks, fetchTasks} = useTaskStore();
+  const {getUserDetails, userData} = useAuthStore();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      fetchTasks();
-    }, [fetchTasks]);
+    const fetchAll = async () => {
+      await fetchTasks();
+      await getUserDetails();
+      setLoading(false);
+    };
+    fetchAll();
+  }, [fetchTasks, getUserDetails]);
+
+  if (loading) return <FullPageLoader />;
 
   const pendingTasks = tasks.filter(task => !task.completed);
   const completedTasks = tasks.filter(task => task.completed);
   const overdueTasks = tasks.filter(task => new Date(task.dueDate) < new Date() && !task.completed);
 
   return (
-      <Container className="p-3 mt-5" style={{height: "93vh"}}>
+      <Container fluid className="p-3 mt-5" style={{height: "93vh"}}>
         <h2>Dashboard</h2>
         <Row className='mt-3'>
           <Col className="mb-3" md={12} lg={12}>
             <Card>
               <Card.Body>
-                <Card.Title>Welcome back, kousigaraj77!</Card.Title>
+                <Card.Title>Welcome back, {userData?.name || 'User'}!</Card.Title>
                 <Card.Text className='text-secondary'>
                   Use the sidebar to navigate between your tasks, add new ones, or manage your profile. 
                   Your productivity dashboard shows a quick overview of your task progress.

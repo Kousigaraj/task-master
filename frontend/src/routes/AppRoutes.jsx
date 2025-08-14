@@ -4,39 +4,63 @@ import Dashboard from "../pages/Dashboard";
 import Tasks from "../pages/Tasks";
 import Trash from "../pages/Trash";
 import Profile from "../pages/Profile";
-import { ToastContainer} from 'react-toastify';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import AppNavbar from "../components/AppNavbar";
+import useAuthStore from "../store/auth";
+import VerifyAccount from "../components/VerifyAccount";
+import FullPageLoader from "../components/FullPageLoader";
 
 const AppRoutes = () => {
-    const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const {userData, getUserDetails} = useAuthStore();
+    const getIsMobile = () => window.innerWidth <= 768;
+    const [isMobile, setIsMobile] = useState(getIsMobile());
+    const [isOpen, setIsOpen] = useState(!getIsMobile());
+    const [loading, setLoading] = useState(true);
+    const resizeTimeout = useRef();
 
-        useEffect(() => {
+    useEffect(() => {
+        const fetchUser = async () => {
+            await getUserDetails();
+            setLoading(false);
+        };
+        fetchUser();
+
         const handleResize = () => {
-        const mobile = window.innerWidth <= 768;
-        setIsMobile(mobile);
-        setIsOpen(!mobile);
+            clearTimeout(resizeTimeout.current);
+            resizeTimeout.current = setTimeout(() => {
+                const mobile = getIsMobile();
+                setIsMobile(mobile);
+                setIsOpen(!mobile);
+            }, 150);
         };
 
         window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        return () => {
+            clearTimeout(resizeTimeout.current);
+            window.removeEventListener("resize", handleResize);
+        };
     }, []);
-  return (
-      <div className="d-flex">
-        <ToastContainer position="bottom-center" autoClose={3000}/>
-        <SideBar isOpen={isOpen} setIsOpen={setIsOpen} isMobile={isMobile}/>
-        <div className="flex-grow-1" style={{marginLeft: isMobile ? "0px" :  "250px", transition: "margin-left 0.3s ease"}}>
-        <AppNavbar setIsOpen={setIsOpen} isMobile={isMobile}/>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/trash" element={<Trash />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
+
+    if (loading) {
+        return <FullPageLoader />;
+    }
+
+    return (
+        <div className="d-flex">
+            <SideBar isOpen={isOpen} setIsOpen={setIsOpen} isMobile={isMobile}/>
+            <div className="flex-grow-1" style={{marginLeft: isMobile ? "0px" :  "250px", transition: "margin-left 0.3s ease"}}>
+                <AppNavbar setIsOpen={setIsOpen} isMobile={isMobile}/>
+                <VerifyAccount show={!userData?.isAccountVerified} />
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/tasks" element={<Tasks />} />
+                    <Route path="/trash" element={<Trash />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+                </Routes>
+            </div>
         </div>
-      </div>
-  )
+    )
 }
 
 export default AppRoutes;

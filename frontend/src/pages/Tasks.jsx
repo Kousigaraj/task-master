@@ -4,11 +4,14 @@ import CreateTaskModal from "../components/CreateTaskModal";
 import TaskCards from "../components/TaskCards";
 import { useTaskStore } from "../store/task";
 import Container from 'react-bootstrap/Container';
+import Spinner from 'react-bootstrap/Spinner';
 
 const Tasks = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const handleClose = () => {
     setSelectedTask(null);
     setIsEdit(false);
@@ -22,17 +25,30 @@ const Tasks = () => {
   const {fetchTasks, tasks} = useTaskStore();
 
   useEffect(() => {
-    fetchTasks();
+    const fetchAllTasks = async () => {
+      setLoading(true);
+      await fetchTasks();
+      setLoading(false);
+    };
+    fetchAllTasks();
   }, [fetchTasks]);
-
 
   const sortedTasks = [...tasks].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
   const pendingTasks = sortedTasks.filter(task => !task.completed);
   const completedTasks = sortedTasks.filter(task => task.completed);
 
+  if (loading) {
+    return (
+      <Container fluid className="d-flex justify-content-center align-items-center" style={{height: "93vh"}}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
 
   return (
-    <Container className="position-relative mt-5 p-3 overflow-auto overflow-x-hidden" style={{height: "93vh"}}>
+    <Container fluid className="position-relative mt-5 p-3 overflow-auto overflow-x-hidden" style={{height: "93vh"}}>
       <h2>Tasks</h2>
       <p className="text-secondary">Manage and track your daily tasks.</p>
       {tasks.length > 0 ? (

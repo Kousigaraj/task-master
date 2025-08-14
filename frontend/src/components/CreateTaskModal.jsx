@@ -83,10 +83,10 @@ const CreateTaskModal = ({ showModal,setShowModal, handleClose, isEdit, existing
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
+        <Button variant="outline-secondary" onClick={handleClose}>
           Cancel
         </Button>
-        <Button variant="primary" 
+        <Button variant="dark" 
         onClick={handleSubmit} 
         disabled={!newTask.title || !newTask.dueDate} 
         >

@@ -7,11 +7,16 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { IoPersonOutline, IoLogOutOutline  } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import { useRef, useEffect } from 'react';
+import { useAuthStore } from '../store/auth';
+import { toast } from 'react-toastify';
 
 export const SideBar = ({isOpen, setIsOpen, isMobile}) => {
     const sidebarRef = useRef();
 
+    const {logout, userData, getUserDetails} = useAuthStore();
+
      useEffect(() => {
+        getUserDetails();
         if (!isMobile || !isOpen) return;
         const handleOutsideClick = (e) => {
         if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
@@ -20,7 +25,16 @@ export const SideBar = ({isOpen, setIsOpen, isMobile}) => {
         };
         document.addEventListener("mousedown", handleOutsideClick);
         return () => document.removeEventListener("mousedown", handleOutsideClick);
-    }, [isOpen, isMobile, setIsOpen]);
+    }, [isOpen, isMobile, setIsOpen, getUserDetails]);
+
+    const handleLogout = async () => {
+        const result = await logout();
+        if (result.success) {
+            toast.success("Logged out successfully");
+        } else {
+            toast.error(result.message || "Logout failed");
+        }
+    };
 
     const handleNavClick = () => {
         if (isMobile) setIsOpen(false);
@@ -37,12 +51,12 @@ export const SideBar = ({isOpen, setIsOpen, isMobile}) => {
             )}
         </div>
         <div className='mb-5' style={{height: "30px"}}>
-            { isOpen && <p>Welcome, kousigaraj!</p> }
+            { isOpen && <p>Welcome, {userData?.name || 'User'}!</p> }
         </div>
         <div className={`${styles.linkcontainer} p-2 d-flex flex-column justify-content-between`}>
             <nav className="nav flex-column">
                 <NavLink
-                to="/app"
+                to="/"
                 end
                 onClick={handleNavClick}
                 className={({ isActive }) =>
@@ -53,7 +67,7 @@ export const SideBar = ({isOpen, setIsOpen, isMobile}) => {
                 <span className='ms-2' style={{whiteSpace: "nowrap"}}>Dashboard</span>
                 </NavLink>
                 <NavLink
-                to="/app/tasks"
+                to="/tasks"
                 end
                 onClick={handleNavClick}
                 className={({ isActive }) =>
@@ -64,7 +78,7 @@ export const SideBar = ({isOpen, setIsOpen, isMobile}) => {
                 <span className='ms-2' style={{whiteSpace: "nowrap"}}>Tasks</span>
                 </NavLink>
                 <NavLink
-                to="/app/trash"
+                to="/trash"
                 end
                 onClick={handleNavClick}
                 className={({ isActive }) =>
@@ -75,7 +89,7 @@ export const SideBar = ({isOpen, setIsOpen, isMobile}) => {
                 <span className='ms-2' style={{whiteSpace: "nowrap"}}>Trash</span>
                 </NavLink>
                 <NavLink
-                to="/app/profile"
+                to="/profile"
                 end
                 onClick={handleNavClick}
                 className={({ isActive }) =>
@@ -86,8 +100,8 @@ export const SideBar = ({isOpen, setIsOpen, isMobile}) => {
                 <span className='ms-2' style={{whiteSpace: "nowrap"}}>Profile</span>
                 </NavLink>
             </nav>
-            <button className='btn btn-light'><IoLogOutOutline />
-            <span className='ms-2' style={{whiteSpace: "nowrap"}}>Log out</span>
+            <button className='btn btn-light' ><IoLogOutOutline />
+            <span className='ms-2' style={{whiteSpace: "nowrap"}} onClick={handleLogout}>Log out</span>
             </button>
         </div>
     </div>

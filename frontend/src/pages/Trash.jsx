@@ -6,16 +6,22 @@ import Button from 'react-bootstrap/Button';
 import AlertModel from '../components/AlertModel';
 import { LuPaintbrush } from "react-icons/lu";
 import { toast } from 'react-toastify';
-
+import Spinner from 'react-bootstrap/Spinner';
 
 const Trash = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertData, setAlertData] = useState({});
   const [isClearTrash, setClearTrash] = useState(false);
+  const [loading, setLoading] = useState(true);
   const {trashedTasks, fetchTrashedTasks, deleteTask, clearTrash} = useTaskStore();
 
   useEffect(() => {
-    fetchTrashedTasks();
+    const fetchTrash = async () => {
+      setLoading(true);
+      await fetchTrashedTasks();
+      setLoading(false);
+    };
+    fetchTrash();
   },[fetchTrashedTasks]);
 
   const handleDeletePermenently = (tid) => {
@@ -28,7 +34,7 @@ const Trash = () => {
   }
 
   const handleClearTrash = () => {
-    if(trashedTasks.length == 0){
+    if(trashedTasks.length === 0){
       toast.error("No Tasks in trash.")
       return;
     }
@@ -39,8 +45,18 @@ const Trash = () => {
     setShowAlert(true);
   }
 
+  if (loading) {
+    return (
+      <Container fluid className="d-flex justify-content-center align-items-center" style={{height: "93vh"}}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
+
   return (
-    <Container className="position-relative mt-5 p-3 overflow-auto overflow-x-hidden" style={{height: "93vh"}}>
+    <Container fluid className="position-relative mt-5 p-3 overflow-auto overflow-x-hidden" style={{height: "93vh"}}>
       <div className='d-flex w-100 justify-content-between'>
         <h2>Trash</h2>
         <Button variant="danger" size='sm' onClick={handleClearTrash}><LuPaintbrush className='me-2'/>Clear Trash</Button>
