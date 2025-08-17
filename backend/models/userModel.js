@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
         type : String, 
         required: true
     },
+    profileImageUrl: { 
+        type: String, 
+        default: "" 
+    },
     emailNotification: {
         type: Boolean,
         default: true

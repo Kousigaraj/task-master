@@ -23,6 +23,7 @@ export const getUserData = async (req, res) => {
                 email: user.email,
                 isAccountVerified: user.isAccountVerified,
                 emailNotification: user.emailNotification,
+                profileImageUrl: user.profileImageUrl
             }
         });
         
@@ -98,7 +99,8 @@ export const updateUserData = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 isAccountVerified: user.isAccountVerified,
-                emailNotification: user.emailNotification
+                emailNotification: user.emailNotification,
+                profileImageUrl: user.profileImageUrl
             }
         });
 
@@ -131,7 +133,7 @@ export const updateEmail = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 isAccountVerified: user.isAccountVerified,
-                emailNotification: user.emailNotification
+                emailNotification: user.emailNotification,
             }
         });
 

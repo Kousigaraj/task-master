@@ -129,7 +129,7 @@ export const useAuthStore = create((set) => ({
         }
     },
     changePassword: async (password, newPassword, confirmNewPassword) => {
-        if (!oldPassword || !newPassword || !confirmNewPassword) {
+        if (!password || !newPassword || !confirmNewPassword) {
             return {success: false, message: 'Provide all Details'};
         }
         if(newPassword !== confirmNewPassword){
@@ -261,6 +261,63 @@ export const useAuthStore = create((set) => ({
                 credentials: "include"
             });
             const data = await res.json();
+            return data;
+        } catch (error) {
+            return { success: false, message: "Network error. Please try again." };
+        }
+    },
+    uploadProfilePhoto: async (file) => {
+        if (!file) {
+            return { success: false, message: 'Please select a photo first.' };
+        }
+        try {
+            const formData = new FormData();
+            formData.append("image", file);
+            const res = await fetch('/api/user/profile-photo', {
+                method: "POST",
+                body: formData,
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                set((state) => ({ userData: { ...state.userData, profileImageUrl: data.profileImageUrl } }));
+            }
+            return data;
+        } catch (error) {
+            return { success: false, message: "Network error. Please try again." };
+        }
+    },
+    updateProfilePhoto: async (file) => {
+        if (!file) {
+            return { success: false, message: 'Please select a photo first.' };
+        }
+        try {
+            const formData = new FormData();
+            formData.append("image", file);
+            const res = await fetch('/api/user/profile-photo', {
+                method: "PUT",
+                body: formData,
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                set((state) => ({ userData: { ...state.userData, profileImageUrl: data.profileImageUrl } }));
+            }
+            return data;
+        } catch (error) {
+            return { success: false, message: "Network error. Please try again." };
+        }
+    },
+    deleteProfilePhoto: async () => {
+        try {
+            const res = await fetch('/api/user/profile-photo', {
+                method: "DELETE",
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                set((state) => ({ userData: { ...state.userData, profileImageUrl: null } }));
+            }
             return data;
         } catch (error) {
             return { success: false, message: "Network error. Please try again." };

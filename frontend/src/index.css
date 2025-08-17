@@ -3,3 +3,13 @@
 *{
     font-family: "Roboto", sans-serif;
 }
+
+.profile-controls{
+    align-items: start;
+}
+
+@media screen and (max-width: 768px) {
+    .profile-controls{
+        align-items: center;
+    }
+}

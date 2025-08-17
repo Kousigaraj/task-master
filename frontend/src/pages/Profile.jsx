@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import './profile.css';
 import { MdEdit } from "react-icons/md";
@@ -15,7 +15,7 @@ import AlertModel from '../components/AlertModel';
 import Spinner from 'react-bootstrap/Spinner';
 
 const Profile = () => {
-  const { userData, getUserDetails, updateUserData, deleteUserAccount } = useAuthStore();
+  const { userData, getUserDetails, uploadProfilePhoto, deleteProfilePhoto, updateProfilePhoto, updateUserData, deleteUserAccount } = useAuthStore();
   const [isEdit, setIsEdit] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertData, setAlertData] = useState({});
@@ -26,6 +26,11 @@ const Profile = () => {
   });
   const [emailNotification, setEmailNotification] = useState(userData?.emailNotification || false);
   const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  const fileInputRef = useRef(null);
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -43,6 +48,59 @@ const Profile = () => {
     });
     setEmailNotification(userData?.emailNotification || false);
   }, [userData]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file)); // preview before upload
+    }
+  };
+
+  const handleUploadPhoto = async () => {
+    setLoading(true);
+    let result;
+    if (userData?.profileImageUrl) {
+      result = await updateProfilePhoto(selectedFile);
+    } else {
+      result = await uploadProfilePhoto(selectedFile);
+    }
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+    setPreviewUrl(null);
+    setSelectedFile(null);
+    setLoading(false);
+  };
+
+  const handleCancelUpload = () => {
+    setPreviewUrl(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // ✅ safe reset
+    }
+  };
+
+  const handleDeletePhoto = async () => {
+    setLoading(true);
+    const result = await deleteProfilePhoto();
+    setLoading(false);
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
+  };
 
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -102,16 +160,66 @@ const Profile = () => {
         <Card.Body>
           <div className="profile-image-input d-flex align-items-center mb-4">
             <img
-              src={profilePic}
+              src={previewUrl || userData?.profileImageUrl || profilePic}
               className="border border-2 rounded-circle"
               alt="Profile Picture"
               style={{ height: "150px", width: "150px", objectFit: "cover" }}
             />
-            <div className="ms-4 text-center">
+
+            <div className="ms-4 d-flex flex-column profile-controls">
+              {/* File input */}
               <label htmlFor="profile-picture" className="form-label fw-bold">
                 Change Profile Picture
               </label>
-              <input id="profile-picture" className="form-control form-control-sm" type="file" disabled={!isEdit}/>
+              <input
+                id="profile-picture"
+                className="form-control form-control-sm"
+                ref={fileInputRef}
+                type="file"
+                onChange={handleFileChange}
+              />
+              <div>
+                {/* Upload or Update button */}
+                {selectedFile && (
+                  <Button
+                    variant="dark"
+                    className="mt-3"
+                    onClick={handleUploadPhoto}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <Spinner size="sm" animation="border" className="me-2" />
+                    ) : null}
+                    {userData?.profileImageUrl ? "Change Profile Photo" : "Set Profile Photo"}
+                  </Button>
+                )}
+
+                {/* Cancel button (only when new file selected) */}
+                {previewUrl && (
+                  <Button
+                    variant="link"
+                    className="mt-3 text-decoration-none"
+                    onClick={handleCancelUpload}
+                    disabled={loading}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
+              {/* Remove photo button (only when user already has profile picture) */}
+              {userData?.profileImageUrl && !previewUrl && (
+                <Button
+                  variant="danger"
+                  className="mt-3"
+                  onClick={handleDeletePhoto}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Spinner size="sm" animation="border" className="me-2" />
+                  ) : null}
+                  Remove Profile Photo
+                </Button>
+              )}
             </div>
           </div>
           <Form>
